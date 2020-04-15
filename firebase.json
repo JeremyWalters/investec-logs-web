@@ -1,0 +1,7 @@
+{
+  "hosting": {
+    "public": "dist",
+    "site": "investec-log",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+  }
+}

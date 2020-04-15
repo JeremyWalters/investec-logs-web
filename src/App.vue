@@ -1,12 +1,50 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-  </div>
+  <v-app id="inspire">
+    <template v-if="isAuthenticated">
+      <v-app-bar app clipped-left>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+        <v-toolbar-title>My Investec Logs</v-toolbar-title>
+      </v-app-bar>
+      <NavigationDrawer :drawer.sync="drawer"></NavigationDrawer>
+    </template>
+
+    <v-content>
+      <router-view />
+    </v-content>
+  </v-app>
 </template>
+
+<script lang="ts">
+import {
+  defineComponent,
+  onMounted,
+  SetupContext,
+  ref,
+  computed
+} from "@vue/composition-api";
+
+import NavigationDrawer from "@/components/NavigationDrawer.vue";
+import { Store } from "vuex";
+import { RootState } from "./store";
+
+export default defineComponent({
+  components: { NavigationDrawer },
+  setup(props: unknown, context: SetupContext) {
+    const store: Store<RootState> = context.root.$store;
+    const drawer = ref(null);
+
+    const isAuthenticated = computed(() => store.state.auth.loggedIn);
+    onMounted(async () => {
+      store.dispatch("firebase/initFirebase");
+    });
+
+    return {
+      isAuthenticated,
+      drawer
+    };
+  }
+});
+</script>
 
 <style lang="scss">
 #app {
