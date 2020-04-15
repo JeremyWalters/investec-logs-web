@@ -22,9 +22,9 @@ Create a Firebase App on the [Firebase Console](https://console.firebase.google.
 
 ### 3. Create config ENV
 
-In your project root create a new file called `.env.locals` . Paste copied config in there. Structure data so it look like `.env`.
+In your project root create a new file called `.env.local` . Paste copied config in there. Structure data so it look like `.env`.
 
-We are adding the `.locals` so the file won't be pushed to github.
+We are adding the `.local` so the file won't be pushed to github.
 
 ## Run app locally
 
