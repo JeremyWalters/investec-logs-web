@@ -8,6 +8,15 @@
             <v-spacer />
           </v-toolbar>
           <v-card-text>
+            <!-- Alert which would show any auth errors -->
+            <v-alert
+              type="error"
+              v-model="error.show"
+              dismissible
+              dense
+              border="bottom"
+              >{{ error.message }}</v-alert
+            >
             <v-form>
               <v-text-field
                 label="Login"
@@ -42,24 +51,27 @@ import { defineComponent, SetupContext, reactive } from "@vue/composition-api";
 export default defineComponent({
   setup(props: unknown, context: SetupContext) {
     const store = context.root.$store;
+    const error = reactive({ message: "", show: false });
     const model = reactive({
       email: "",
       password: ""
     });
 
     async function login() {
-      try {
-        await store.dispatch("auth/login", model);
+      const errorResponse = await store.dispatch("auth/login", model);
 
-        context.root.$router.push({ name: "Transactions" });
-      } catch (error) {
-        // Notifications in progress
+      if (errorResponse) {
+        error.message = errorResponse.message;
+        error.show = true;
       }
+
+      context.root.$router.push({ name: "Transactions" });
     }
 
     return {
       login,
-      model
+      model,
+      error
     };
   }
 });

@@ -24,6 +24,7 @@ export const actions: ActionTree<AuthState, RootState> = {
       commit("loading", false);
     } catch (error) {
       commit("loading", false);
+      return error;
     }
   }
 };

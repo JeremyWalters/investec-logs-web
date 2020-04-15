@@ -10,12 +10,12 @@ const firebaseConfig = {
   storageBucket: process.env.VUE_APP_STORAGE_BUCKET,
   messagingSenderId: process.env.VUE_APP_MESSAGING_SENDER_ID,
   appId: process.env.VUE_APP_APP_ID,
-  measurementId: process.env.VUE_APP_MEASUREMENT_ID,
+  measurementId: process.env.VUE_APP_MEASUREMENT_ID
 };
 
 export enum FirestoreCollections {
   TRANSACTIONS = "transactions",
-  CATEGORIES = "categories",
+  CATEGORIES = "categories"
 }
 
 export interface FirebaseState {
@@ -27,13 +27,12 @@ export interface FirebaseState {
 export const state: FirebaseState = {
   instance: undefined,
   firestore: undefined,
-  loading: false,
+  loading: false
 };
 
 export const actions: ActionTree<FirebaseState, RootState> = {
   async initFirebase({ commit }) {
     try {
-      debugger;
       const fb = firebaseInstance.initializeApp(firebaseConfig);
       const fs = fb.firestore();
       commit("setFirebase", fb);
@@ -46,7 +45,7 @@ export const actions: ActionTree<FirebaseState, RootState> = {
       //     { root: true }
       //   );
     }
-  },
+  }
 };
 
 export const mutations: MutationTree<FirebaseState> = {
@@ -58,7 +57,7 @@ export const mutations: MutationTree<FirebaseState> = {
   },
   loading(state, payload = true) {
     state.loading = payload;
-  },
+  }
 };
 
 export const getters: GetterTree<FirebaseState, RootState> = {};
@@ -70,7 +69,7 @@ export const firebase: Module<FirebaseState, RootState> = {
   state,
   getters,
   actions,
-  mutations,
+  mutations
 };
 
 export default firebase;

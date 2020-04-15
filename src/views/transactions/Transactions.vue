@@ -7,10 +7,12 @@
         class="elevation-1"
         v-if="$vuetify.breakpoint.mdAndUp"
       >
-        <template v-slot:item.centsAmount="{ item }">{{ centsToRands(item.centsAmount) }}</template>
-        <template
-          v-slot:item.dateTime="{ item }"
-        >{{ formatDate(item.dateTime, "yyyy-MM-dd HH:mm") }}</template>
+        <template v-slot:item.centsAmount="{ item }">{{
+          centsToRands(item.centsAmount)
+        }}</template>
+        <template v-slot:item.dateTime="{ item }">{{
+          formatDate(item.dateTime, "yyyy-MM-dd HH:mm")
+        }}</template>
       </v-data-table>
       <v-list two-line v-else>
         <v-list-item-group active-class="pink--text">
@@ -18,22 +20,34 @@
             <v-list-item :key="item.dateTime">
               <template v-slot:default>
                 <v-list-item-content class="text-left">
-                  <v-list-item-title v-text="item.merchant.name"></v-list-item-title>
+                  <v-list-item-title
+                    v-text="item.merchant.name"
+                  ></v-list-item-title>
                   <v-list-item-subtitle
                     class="text--primary"
                     v-text="centsToRands(item.centsAmount)"
                   ></v-list-item-subtitle>
-                  <v-list-item-subtitle class="text--primary" v-text="item.merchant.category.name"></v-list-item-subtitle>
+                  <v-list-item-subtitle
+                    class="text--primary"
+                    v-text="item.merchant.category.name"
+                  ></v-list-item-subtitle>
                 </v-list-item-content>
 
                 <v-list-item-action>
-                  <v-list-item-action-text v-text="formatDate(item.dateTime, 'yyyy-MM-dd HH:mm')"></v-list-item-action-text>
-                  <v-list-item-action-text v-text="item.reference"></v-list-item-action-text>
+                  <v-list-item-action-text
+                    v-text="formatDate(item.dateTime, 'yyyy-MM-dd HH:mm')"
+                  ></v-list-item-action-text>
+                  <v-list-item-action-text
+                    v-text="item.reference"
+                  ></v-list-item-action-text>
                 </v-list-item-action>
               </template>
             </v-list-item>
 
-            <v-divider v-if="index + 1 < transactions.length" :key="index"></v-divider>
+            <v-divider
+              v-if="index + 1 < transactions.length"
+              :key="index"
+            ></v-divider>
           </template>
         </v-list-item-group>
       </v-list>
