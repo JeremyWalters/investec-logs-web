@@ -6,11 +6,13 @@ import { FirestoreCollections } from "./firebase";
 export interface TransactionsState {
   loading: boolean;
   transactions: Transaction[];
+  spendingByCategory?: { [category: string]: number };
 }
 
 export const state: TransactionsState = {
   transactions: [],
-  loading: false
+  spendingByCategory: undefined,
+  loading: false,
 };
 
 export const actions: ActionTree<TransactionsState, RootState> = {
@@ -20,13 +22,19 @@ export const actions: ActionTree<TransactionsState, RootState> = {
       const db = rootState.firebase.firestore;
       if (!db) return;
 
+      // const getSpendingByCategory = rootState.firebase.instance?.functions().httpsCallable("getSpendingByCategory");
+      // if (getSpendingByCategory) {
+      //   const response = await getSpendingByCategory();
+      //   console.log(response);
+      // }
+
       await db
         .collection(FirestoreCollections.TRANSACTIONS)
         .orderBy("dateTime", "desc")
-        .onSnapshot(querySnapshot => {
+        .onSnapshot((querySnapshot) => {
           commit(
             "setTransactions",
-            querySnapshot.docs.map(doc => doc.data())
+            querySnapshot.docs.map((doc) => doc.data())
           );
         });
 
@@ -34,16 +42,32 @@ export const actions: ActionTree<TransactionsState, RootState> = {
     } catch (error) {
       commit("loading", false);
     }
-  }
+  },
+  async fetchSpendingByCategory({ commit, rootState }) {
+    try {
+      if (!rootState.firebase.instance) return;
+
+      const getSpendingByCategory = rootState.firebase.instance.functions().httpsCallable("getSpendingByCategory");
+      if (getSpendingByCategory) {
+        const response = await getSpendingByCategory();
+        commit("setSpendingByCategory", response.data);
+      }
+    } catch (error) {
+      //
+    }
+  },
 };
 
 export const mutations: MutationTree<TransactionsState> = {
   setTransactions(state, payload) {
     state.transactions = payload;
   },
+  setSpendingByCategory(state, payload) {
+    state.spendingByCategory = payload;
+  },
   loading(state, payload = true) {
     state.loading = payload;
-  }
+  },
 };
 
 export const getters: GetterTree<TransactionsState, RootState> = {};
@@ -55,7 +79,7 @@ export const transactions: Module<TransactionsState, RootState> = {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };
 
 export default transactions;
