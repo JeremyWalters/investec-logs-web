@@ -1,17 +1,20 @@
 <template>
-  <v-navigation-drawer
-    :value="drawer"
-    @input="$emit('update:drawer', $event)"
-    app
-    clipped
-  >
+  <v-navigation-drawer :value="drawer" @input="$emit('update:drawer', $event)" app clipped>
     <v-list dense>
-      <v-list-item link>
+      <v-list-item link :to="{name: 'Transactions'}">
         <v-list-item-action>
           <v-icon>mdi-post-outline</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Transactions</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item link :to="{name: 'Expenditure'}">
+        <v-list-item-action>
+          <v-icon>mdi-cash-multiple</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Expenditure</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
