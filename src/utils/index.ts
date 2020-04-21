@@ -11,9 +11,11 @@ export async function indexCategoriesCollection() {
   const firestore = store.state.firebase.firestore;
   if (!firestore) return;
 
-  const collRef = await firestore.collection(FirestoreCollections.TRANSACTIONS).get();
+  const collRef = await firestore
+    .collection(FirestoreCollections.TRANSACTIONS)
+    .get();
 
-  collRef.docs.map(async (doc) => {
+  collRef.docs.map(async doc => {
     const category = doc.get("merchant.category");
     await firestore
       .collection(FirestoreCollections.CATEGORIES)
@@ -27,7 +29,7 @@ export function centsToRands(cents: number) {
   return rands
     .toLocaleString("en-ZA", {
       style: "currency",
-      currency: "ZAR",
+      currency: "ZAR"
     })
     .replace(/,/g, ".");
 }

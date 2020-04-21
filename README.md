@@ -13,16 +13,25 @@ Before continuing make sure you already have a firebase + firestore setup up and
 ---
 
 Create a Firebase App on the [Firebase Console](https://console.firebase.google.com) under project settings. 
-  1) You will be prompt to choose a platform. Choose web.
+  1) You will be prompt to choose a platform. Choose web
   2) Tick box also setup firebase hosting
   3) Click on dropdown. Choose `Create a new site`
-  4) Follow steps to finish
-  5) Under your created web application **copy** config found under the `Firebase SDK Setup`
+  4) Skip through steps until you reach step 4) of creating a new site. Copy `site` value
+  5) In your project paste it your firebase.json file
+  6) Skip to finish
+  7) Under your created web application **copy** config found under the `Firebase SDK Setup`
 
 
 ### 3. Create config ENV
 
-In your project root create a new file called `.env.local` . Paste copied config in there. Structure data so it look like `.env`.
+In your project root create a new file called `.env.local` . Paste copied config in there. Structure data so it look like `.env`. Env file should contain quotations or commas
+
+`.env` example:
+
+```
+value1=string
+value2=string
+```
 
 We are adding the `.local` so the file won't be pushed to github.
 

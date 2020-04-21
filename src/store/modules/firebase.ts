@@ -15,7 +15,8 @@ const firebaseConfig = {
 
 export enum FirestoreCollections {
   TRANSACTIONS = "transactions",
-  CATEGORIES = "categories"
+  CATEGORIES = "categories",
+  TAGS = "tags"
 }
 
 export interface FirebaseState {

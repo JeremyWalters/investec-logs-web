@@ -7,12 +7,12 @@
         class="elevation-1"
         v-if="$vuetify.breakpoint.mdAndUp"
       >
-        <template v-slot:item.centsAmount="{ item }">{{
-          centsToRands(item.centsAmount)
-        }}</template>
-        <template v-slot:item.dateTime="{ item }">{{
-          formatDate(item.dateTime, "yyyy-MM-dd HH:mm")
-        }}</template>
+        <template v-slot:item.centsAmount="{ item }">
+          {{ centsToRands(item.centsAmount) }}
+        </template>
+        <template v-slot:item.dateTime="{ item }">
+          {{ formatDate(item.dateTime, "yyyy-MM-dd HH:mm") }}
+        </template>
       </v-data-table>
       <v-list two-line v-else>
         <v-list-item-group active-class="pink--text">
@@ -77,7 +77,8 @@ export default defineComponent({
       { text: "Reference", value: "reference" },
       { text: "Merchant", value: "merchant.name" },
       { text: "Category", value: "merchant.category.name" },
-      { text: "Account Number", value: "accountNumber" }
+      { text: "Account Number", value: "accountNumber" },
+      { text: "Tags", value: "tags" }
     ];
 
     const transactions: Readonly<Ref<readonly Transaction[]>> = computed(() => {

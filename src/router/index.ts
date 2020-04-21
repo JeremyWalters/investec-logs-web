@@ -8,12 +8,24 @@ const routes = [
   {
     path: "/transactions",
     name: "Transactions",
-    component: () => import(/* webpackChunkName: "transactions" */ "../views/transactions/Transactions.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "transactions" */ "../views/transactions/Transactions.vue"
+      )
   },
   {
     path: "/expenditure",
     name: "Expenditure",
-    component: () => import(/* webpackChunkName: "expenditure" */ "../views/transactions/Expenditure.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "expenditure" */ "../views/transactions/Expenditure.vue"
+      )
+  },
+  {
+    path: "/tags",
+    name: "Tags",
+    component: () =>
+      import(/* webpackChunkName: "tags" */ "../views/transactions/Tags.vue")
   },
   {
     path: "/login",
@@ -21,14 +33,15 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "login" */ "../views/auth/Login.vue"),
-  },
+    component: () =>
+      import(/* webpackChunkName: "login" */ "../views/auth/Login.vue")
+  }
 ];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes,
+  routes
 });
 
 export default router;

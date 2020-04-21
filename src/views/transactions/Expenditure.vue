@@ -16,12 +16,10 @@ import {
   defineComponent,
   SetupContext,
   computed,
-  Ref,
   onMounted,
   watch
 } from "@vue/composition-api";
-import { Transaction } from "@/store/types/transactions";
-import { centsToRands, formatDate } from "@/utils";
+import { centsToRands } from "@/utils";
 
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
@@ -101,7 +99,7 @@ export default defineComponent({
     watch(
       categorySpending,
       data => {
-        chart.data = JSON.parse(JSON.stringify(categorySpending.value));
+        chart.data = JSON.parse(JSON.stringify(data));
       },
       { lazy: true }
     );
@@ -112,4 +110,3 @@ export default defineComponent({
   }
 });
 </script>
-

@@ -6,13 +6,23 @@ import { FirestoreCollections } from "./firebase";
 export interface TransactionsState {
   loading: boolean;
   transactions: Transaction[];
+  tags: Tag[];
   spendingByCategory?: { [category: string]: number };
+}
+
+interface Tag {
+  name: string;
+  merchantName: string;
+  centsAmount: number;
+  amountOperator: "<" | "<=" | "==" | ">" | ">=";
+  applyFuture: boolean;
 }
 
 export const state: TransactionsState = {
   transactions: [],
+  tags: [],
   spendingByCategory: undefined,
-  loading: false,
+  loading: false
 };
 
 export const actions: ActionTree<TransactionsState, RootState> = {
@@ -22,19 +32,51 @@ export const actions: ActionTree<TransactionsState, RootState> = {
       const db = rootState.firebase.firestore;
       if (!db) return;
 
-      // const getSpendingByCategory = rootState.firebase.instance?.functions().httpsCallable("getSpendingByCategory");
-      // if (getSpendingByCategory) {
-      //   const response = await getSpendingByCategory();
-      //   console.log(response);
-      // }
-
       await db
         .collection(FirestoreCollections.TRANSACTIONS)
         .orderBy("dateTime", "desc")
-        .onSnapshot((querySnapshot) => {
+        .onSnapshot(querySnapshot => {
           commit(
             "setTransactions",
-            querySnapshot.docs.map((doc) => doc.data())
+            querySnapshot.docs.map(doc => doc.data())
+          );
+        });
+
+      commit("loading", false);
+    } catch (error) {
+      commit("loading", false);
+    }
+  },
+  async addTag({ commit, rootState, dispatch }, payload) {
+    try {
+      commit("loading");
+
+      const db = rootState.firebase.firestore;
+      if (!db) return;
+
+      await db
+        .collection(FirestoreCollections.TAGS)
+        .doc(payload.name)
+        .set(payload);
+
+      dispatch("notifictions/success");
+      commit("loading", false);
+    } catch (error) {
+      dispatch("notifictions/error", error, { root: true });
+    }
+  },
+  async fetchAllTags({ commit, rootState }) {
+    try {
+      commit("loading");
+      const db = rootState.firebase.firestore;
+      if (!db) return;
+
+      await db
+        .collection(FirestoreCollections.TAGS)
+        .onSnapshot(querySnapshot => {
+          commit(
+            "setTags",
+            querySnapshot.docs.map(doc => doc.data())
           );
         });
 
@@ -47,7 +89,9 @@ export const actions: ActionTree<TransactionsState, RootState> = {
     try {
       if (!rootState.firebase.instance) return;
 
-      const getSpendingByCategory = rootState.firebase.instance.functions().httpsCallable("getSpendingByCategory");
+      const getSpendingByCategory = rootState.firebase.instance
+        .functions()
+        .httpsCallable("getSpendingByCategory");
       if (getSpendingByCategory) {
         const response = await getSpendingByCategory();
         commit("setSpendingByCategory", response.data);
@@ -55,19 +99,22 @@ export const actions: ActionTree<TransactionsState, RootState> = {
     } catch (error) {
       //
     }
-  },
+  }
 };
 
 export const mutations: MutationTree<TransactionsState> = {
   setTransactions(state, payload) {
     state.transactions = payload;
   },
+  setTags(state, payload) {
+    state.tags = payload;
+  },
   setSpendingByCategory(state, payload) {
     state.spendingByCategory = payload;
   },
   loading(state, payload = true) {
     state.loading = payload;
-  },
+  }
 };
 
 export const getters: GetterTree<TransactionsState, RootState> = {};
@@ -79,7 +126,7 @@ export const transactions: Module<TransactionsState, RootState> = {
   state,
   getters,
   actions,
-  mutations,
+  mutations
 };
 
 export default transactions;
