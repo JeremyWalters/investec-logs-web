@@ -8,7 +8,9 @@
     transition="dialog-transition"
   >
     <v-card>
-      <v-card-title class="grey lighten-2 py-2 px-3" primary-title dense>Tags</v-card-title>
+      <v-card-title class="grey lighten-2 py-2 px-3" primary-title dense
+        >Tags</v-card-title
+      >
       <v-card-text>
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
@@ -21,9 +23,16 @@
             v-model="model.name"
           ></v-text-field>
 
-          <v-select :items="linkItems" label="Link To:" v-model="link"></v-select>
+          <v-select
+            :items="linkItems"
+            label="Link To:"
+            v-model="link"
+          ></v-select>
           <template v-if="link">
-            <v-checkbox label="Apply To Future Transactions" v-model="model.applyFuture"></v-checkbox>
+            <v-checkbox
+              label="Apply To Future Transactions"
+              v-model="model.applyFuture"
+            ></v-checkbox>
             <v-checkbox
               disabled
               label="Apply To Existing Transactions"
@@ -41,7 +50,12 @@
               ></v-select>
             </v-col>
             <v-col>
-              <v-text-field label="Amount In Rands" type="number" v-model.number="amount" min="0"></v-text-field>
+              <v-text-field
+                label="Amount In Rands"
+                type="number"
+                v-model.number="amount"
+                min="0"
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row v-if="link == 'merchant'">

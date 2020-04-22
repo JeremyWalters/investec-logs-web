@@ -1,13 +1,15 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="6">
-        <v-card class="pb-3">
-          <v-card-title primary-title>Spending By Category</v-card-title>
-          <div id="spendingByCategoryPie"></div>
-        </v-card>
-      </v-col>
-    </v-row>
+    <v-card>
+      <v-card-title primary-title>Spending By Category</v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col cols="6">
+            <div id="spendingByCategoryPie"></div>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 

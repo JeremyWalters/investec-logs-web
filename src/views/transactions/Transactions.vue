@@ -1,19 +1,22 @@
 <template>
-  <v-container class="pa-2">
+  <v-container>
     <v-card class="mx-auto">
-      <v-data-table
-        :headers="headers"
-        :items="transactions"
-        class="elevation-1"
-        v-if="$vuetify.breakpoint.mdAndUp"
-      >
-        <template v-slot:item.centsAmount="{ item }">
-          {{ centsToRands(item.centsAmount) }}
-        </template>
-        <template v-slot:item.dateTime="{ item }">
-          {{ formatDate(item.dateTime, "yyyy-MM-dd HH:mm") }}
-        </template>
-      </v-data-table>
+      <v-card-title primary-title>Transactions</v-card-title>
+      <v-card-text v-if="$vuetify.breakpoint.mdAndUp">
+        <v-data-table
+          :headers="headers"
+          :items="transactions"
+          class="elevation-1"
+        >
+          <template v-slot:item.centsAmount="{ item }">{{
+            centsToRands(item.centsAmount)
+          }}</template>
+          <template v-slot:item.dateTime="{ item }">{{
+            formatDate(item.dateTime, "yyyy-MM-dd HH:mm")
+          }}</template>
+        </v-data-table>
+      </v-card-text>
+
       <v-list two-line v-else>
         <v-list-item-group active-class="pink--text">
           <template v-for="(item, index) in transactions">
@@ -98,21 +101,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>

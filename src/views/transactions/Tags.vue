@@ -1,15 +1,15 @@
 <template>
   <v-container>
-    <v-card flat>
+    <v-card>
       <TagsDialog v-model="dialog"></TagsDialog>
       <v-card-title primary-title>Tags</v-card-title>
       <v-card-text>
-        <v-btn color="primary" @click="dialog = true">Add Tags</v-btn>
+        <v-btn color="primary" @click="dialog = true" class="mb-2"
+          >Add Tags</v-btn
+        >
         <v-data-table :headers="headers" :items="items" class="elevation-1">
           <template v-slot:item.centsAmount="{ item }">
-            {{
-            centsToRands(item.centsAmount)
-            }}
+            {{ centsToRands(item.centsAmount) }}
           </template>
         </v-data-table>
       </v-card-text>

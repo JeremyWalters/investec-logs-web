@@ -8,7 +8,7 @@
       <NavigationDrawer :drawer.sync="drawer"></NavigationDrawer>
     </template>
 
-    <v-content>
+    <v-content style="background-color: #eee">
       <router-view />
     </v-content>
   </v-app>
