@@ -8,6 +8,7 @@ export interface TransactionsState {
   transactions: Transaction[];
   tags: Tag[];
   spendingByCategory?: { [category: string]: number };
+  spendingByMonth?: { [month: string]: number };
 }
 
 interface Tag {
@@ -22,6 +23,7 @@ export const state: TransactionsState = {
   transactions: [],
   tags: [],
   spendingByCategory: undefined,
+  spendingByMonth: undefined,
   loading: false
 };
 
@@ -89,6 +91,7 @@ export const actions: ActionTree<TransactionsState, RootState> = {
     try {
       if (!rootState.firebase.instance) return;
 
+      commit("loading");
       const getSpendingByCategory = rootState.firebase.instance
         .functions()
         .httpsCallable("getSpendingByCategory");
@@ -96,7 +99,27 @@ export const actions: ActionTree<TransactionsState, RootState> = {
         const response = await getSpendingByCategory();
         commit("setSpendingByCategory", response.data);
       }
+      commit("loading", false);
     } catch (error) {
+      commit("loading", false);
+      //
+    }
+  },
+  async fetchSpendingByMonth({ commit, rootState }) {
+    try {
+      if (!rootState.firebase.instance) return;
+
+      commit("loading");
+      const getSpendingByMonth = rootState.firebase.instance
+        .functions()
+        .httpsCallable("getSpendingByMonth");
+      if (getSpendingByMonth) {
+        const response = await getSpendingByMonth();
+        commit("setSpendingByMonth", response.data);
+      }
+      commit("loading", false);
+    } catch (error) {
+      commit("loading", false);
       //
     }
   }
@@ -111,6 +134,9 @@ export const mutations: MutationTree<TransactionsState> = {
   },
   setSpendingByCategory(state, payload) {
     state.spendingByCategory = payload;
+  },
+  setSpendingByMonth(state, payload) {
+    state.spendingByMonth = payload;
   },
   loading(state, payload = true) {
     state.loading = payload;

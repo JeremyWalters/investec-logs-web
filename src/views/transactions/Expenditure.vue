@@ -1,11 +1,26 @@
 <template>
   <v-container>
-    <v-card>
-      <v-card-title primary-title>Spending By Category</v-card-title>
+    <v-card :loading="loading">
+      <v-card-title primary-title>Expenditure</v-card-title>
       <v-card-text>
         <v-row>
           <v-col cols="6">
-            <div id="spendingByCategoryPie"></div>
+            <span class="subtitle-2 ml-2">Spending By Category</span>
+            <PieChart
+              id="categorySpending"
+              :items="categorySpendingItems"
+              category="category"
+              value="spending"
+            ></PieChart>
+          </v-col>
+          <v-col cols="6">
+            <span class="subtitle-2 ml-2">Spending By Month</span>
+            <ColumnChart
+              id="monthlySpending"
+              :items="monthlySpendingItems"
+              category-x="month"
+              value-y="spending"
+            ></ColumnChart>
           </v-col>
         </v-row>
       </v-card-text>
@@ -19,73 +34,25 @@ import {
   SetupContext,
   computed,
   onMounted,
-  watch
+  watch,
+  ref
 } from "@vue/composition-api";
 import { centsToRands } from "@/utils";
-
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themesAnimated from "@amcharts/amcharts4/themes/animated";
-
-am4core.useTheme(am4themesAnimated);
+import ColumnChart from "@/components/charts/ColumnChart.vue";
+import PieChart from "@/components/charts/PieChart.vue";
 
 export default defineComponent({
+  components: { ColumnChart, PieChart },
   setup(props: unknown, context: SetupContext) {
     const store = context.root.$store;
-    let chart!: am4charts.PieChart;
+    const loading = computed(() => store.state.transactions.loading);
+
+    const monthlySpendingItems = ref([]);
+    const categorySpendingItems = ref([]);
 
     onMounted(() => {
       store.dispatch("transactions/fetchSpendingByCategory");
-      chart = am4core.create("spendingByCategoryPie", am4charts.PieChart);
-
-      // Add and configure Series
-      const pieSeries = chart.series.push(new am4charts.PieSeries());
-      pieSeries.dataFields.value = "spending";
-      pieSeries.dataFields.category = "category";
-
-      // Create gap between slices
-      pieSeries.slices.template.stroke = am4core.color("#fff");
-      pieSeries.slices.template.strokeWidth = 2;
-      pieSeries.slices.template.strokeOpacity = 1;
-
-      // Disable labeling
-      pieSeries.labels.template.disabled = true;
-      pieSeries.ticks.template.disabled = true;
-      pieSeries.slices.template.tooltipText = `{category}: R {value}`;
-
-      // Add a legend
-      chart.legend = new am4charts.Legend();
-      chart.legend.fontSize = 10;
-      chart.legend.position = "right";
-      chart.legend.valign = "top";
-
-      // Adjust Legend
-      const markerTemplate = chart.legend.markers.template;
-      markerTemplate.width = 15;
-      markerTemplate.height = 15;
-
-      // Slide slices out on hover
-      const hover = pieSeries.slices.template.states.getKey("hover");
-      if (hover) {
-        hover.properties.shiftRadius = 0;
-        hover.properties.scale = 1.1;
-      }
-
-      const cellSize = 35;
-      chart.events.on("datavalidated", function(ev) {
-        const chart = ev.target;
-        const contentHeight = chart.contentHeight;
-
-        // Calculate how we need to adjust chart height
-        const adjustHeight = chart.data.length * cellSize - contentHeight;
-
-        // get current chart height
-        const targetHeight = chart.pixelHeight + adjustHeight;
-
-        // Set it on chart's container
-        if (chart.svgContainer)
-          chart.svgContainer.htmlElement.style.height = targetHeight + "px";
-      });
+      store.dispatch("transactions/fetchSpendingByMonth");
     });
 
     const categorySpending = computed(() => {
@@ -98,16 +65,32 @@ export default defineComponent({
       });
     });
 
+    const monthlySpending = computed(() => {
+      const dict = store.state.transactions.spendingByMonth;
+      if (!dict) return;
+
+      const keys = Object.keys(dict);
+      return keys.map(v => {
+        return { month: v, spending: centsToRands(dict[v]) };
+      });
+    });
+
     watch(
       categorySpending,
       data => {
-        chart.data = JSON.parse(JSON.stringify(data));
+        categorySpendingItems.value = JSON.parse(JSON.stringify(data));
       },
       { lazy: true }
     );
 
+    watch(monthlySpending, data => {
+      if (data) monthlySpendingItems.value = JSON.parse(JSON.stringify(data));
+    });
+
     return {
-      categorySpending
+      loading,
+      categorySpendingItems,
+      monthlySpendingItems
     };
   }
 });
