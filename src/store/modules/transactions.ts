@@ -40,13 +40,23 @@ export const actions: ActionTree<TransactionsState, RootState> = {
         .onSnapshot(querySnapshot => {
           commit(
             "setTransactions",
-            querySnapshot.docs.map(doc => doc.data())
+            querySnapshot.docs.map(doc => {
+              return { id: doc.id, ...doc.data() };
+            })
           );
+          commit("loading", false);
         });
-
-      commit("loading", false);
     } catch (error) {
       commit("loading", false);
+    }
+  },
+  async setFlagged({ rootState }, payload) {
+    const db = rootState.firebase.firestore;
+    if (db) {
+      await db
+        .collection(FirestoreCollections.TRANSACTIONS)
+        .doc(payload.id)
+        .set({ flagged: !payload.flagged }, { merge: true });
     }
   },
   async addTag({ commit, rootState, dispatch }, payload) {

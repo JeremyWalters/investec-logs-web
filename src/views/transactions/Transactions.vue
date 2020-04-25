@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card class="mx-auto">
+    <v-card class="mx-auto" :loading="loading">
       <v-card-title primary-title>Transactions</v-card-title>
       <v-card-text v-if="$vuetify.breakpoint.mdAndUp">
         <v-data-table
@@ -8,12 +8,27 @@
           :items="transactions"
           class="elevation-1"
         >
-          <template v-slot:item.centsAmount="{ item }">{{
-            centsToRands(item.centsAmount)
-          }}</template>
-          <template v-slot:item.dateTime="{ item }">{{
-            formatDate(item.dateTime, "yyyy-MM-dd HH:mm")
-          }}</template>
+          <template v-slot:item.flagged="{ item }">
+            <v-btn text icon small @click="onFlagClick(item)">
+              <v-icon color="warning" v-if="item.flagged"
+                >mdi-flag-variant</v-icon
+              >
+              <v-icon v-else>mdi-flag-variant-outline</v-icon>
+            </v-btn>
+          </template>
+          <template v-slot:item.centsAmount="{ item }">
+            {{ centsToRands(item.centsAmount) }}
+          </template>
+
+          <template v-slot:item.dateTime="{ item }">
+            {{ formatDate(item.dateTime, "yyyy-MM-dd HH:mm") }}
+          </template>
+
+          <template v-slot:item.tags="{ item }">
+            <v-chip v-for="tag of item.tags" :key="tag" label small>
+              {{ tag }}
+            </v-chip>
+          </template>
         </v-data-table>
       </v-card-text>
 
@@ -72,16 +87,18 @@ import { centsToRands, formatDate } from "@/utils";
 export default defineComponent({
   setup(props: unknown, context: SetupContext) {
     const store = context.root.$store;
+    const loading = computed(() => store.state.transactions.loading);
 
     // Table header mappings
     const headers = [
-      { text: "Date Time", value: "dateTime" },
+      { text: "", value: "flagged" },
+      { text: "Date Time", value: "dateTime", width: 150 },
       { text: "Amount", value: "centsAmount" },
-      { text: "Reference", value: "reference" },
-      { text: "Merchant", value: "merchant.name" },
+      { text: "Reference", value: "reference", class: "nobr" },
+      { text: "Merchant", value: "merchant.name", class: "nobr" },
       { text: "Category", value: "merchant.category.name" },
-      { text: "Account Number", value: "accountNumber" },
-      { text: "Tags", value: "tags" }
+      { text: "Account Number", value: "accountNumber", class: "nobr" },
+      { text: "Tags", value: "tags", class: "nobr" }
     ];
 
     const transactions: Readonly<Ref<readonly Transaction[]>> = computed(() => {
@@ -92,12 +109,23 @@ export default defineComponent({
       store.dispatch("transactions/fetchAllTransactions");
     });
 
+    function onFlagClick(transaction: Transaction) {
+      store.dispatch("transactions/setFlagged", transaction);
+    }
+
     return {
       transactions,
       headers,
       centsToRands,
-      formatDate
+      formatDate,
+      onFlagClick,
+      loading
     };
   }
 });
 </script>
+<style>
+.nobr {
+  white-space: nowrap;
+}
+</style>
