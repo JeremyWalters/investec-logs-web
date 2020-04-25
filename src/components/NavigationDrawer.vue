@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    :value="drawer"
+    :mini-variant="!drawer"
     @input="$emit('update:drawer', $event)"
     app
     clipped
@@ -28,6 +28,14 @@
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Tags</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item link :to="{ name: 'Account Settings' }" disabled>
+        <v-list-item-action>
+          <v-icon disabled>mdi-cog</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Settings</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
