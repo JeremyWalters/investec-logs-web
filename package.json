@@ -9,7 +9,7 @@
     "deploy": "npm run build && firebase deploy"
   },
   "dependencies": {
-    "@amcharts/amcharts4": "^4.9.16",
+    "@amcharts/amcharts4": "^4.10.28",
     "@vue/composition-api": "^0.5.0",
     "date-fns": "^2.12.0",
     "firebase": "^7.14.0",
